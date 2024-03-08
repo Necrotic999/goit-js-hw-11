@@ -13,7 +13,7 @@ export function getImages(userValue) {
 
     return fetch(url).then(res => { 
         if (!res.ok) { 
-            console.log("ERROR");
+            throw new Error(res.status);
         }
         return res.json();
     })
