@@ -6,7 +6,10 @@ import "izitoast/dist/css/iziToast.min.css";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
-
+const instance = new SimpleLightbox(".gallery a", {
+            captionsData: "alt",
+            captionDelay: 200,
+        }); 
 
 const formEl = document.querySelector(".js-form");
 const loadEl = document.querySelector(".loader");
@@ -18,9 +21,11 @@ function onBtnSubmit(e) {
     const inputValue = e.target.elements.photo.value;
     if (!inputValue.trim()) return;
     showLoader();
-    
+
     getImages(inputValue).then(({hits}) => { 
+        const markup = imagesTemplate({ hits });
         if (hits.length === 0) {
+            ulEl.innerHTML = markup;
             return iziToast.show({
                 iconUrl: error,
                 color: "#ef4040",
@@ -29,20 +34,9 @@ function onBtnSubmit(e) {
                 message: "Sorry, there are no images matching your search query. Please try again!"
             });
         } 
-    }).finally(() => { 
-        hideLoader();
-    });
-
-    getImages(inputValue).then(({ hits }) => { 
-        showLoader();
-
-        const markup = imagesTemplate({ hits });
         ulEl.innerHTML = markup;
-        new SimpleLightbox(".gallery a", {
-            captionsData: "alt",
-            captionDelay: 200,
-        });
-        refresh();
+        
+        instance.refresh();
     }).finally(() => { 
         hideLoader();
     });
